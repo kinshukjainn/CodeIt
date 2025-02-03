@@ -31,7 +31,7 @@ Here is the explaination for the code :-
 
 
 ### I Love You Le-Mistral (What's DeepSeek !?)
-### Don't believe me? Look at this [Why Le-mistral is my man](https://chat.mistral.ai/chat/dccd5e70-37e4-4527-95eb-8cc87ffb4943)
+### Don't believe me? Look at this [Why Le-mistral is my man](https://chat.mistral.ai/chat/e3d059a6-7eb7-40d6-b212-b1aeb39d76ab)
 
 Purpose
 

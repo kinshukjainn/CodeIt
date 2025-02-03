@@ -5,6 +5,7 @@ const path = require('path')
 
 const express = require('express')
 const pty = require('node-pty')
+const cors = require('cors')
 const { Server: SocketServer } = require('socket.io')
 
 const app = express()
@@ -28,6 +29,8 @@ const ptyProcess = pty.spawn(shell, [], {
 
 // Don't need to manually handle the upgrade event yourself when using socket.io, leads to conflicts and the "handleUpgrade called more than once" error
 // io.attach(server)
+
+app.use(cors())
 
 ptyProcess.onData(data => {
     io.emit('terminal:data', data)
