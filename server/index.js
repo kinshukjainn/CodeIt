@@ -1,5 +1,7 @@
 const http = require('http')
 const os = require('os')
+const { promises: fs } = require('fs')
+const path = require('path')
 
 const express = require('express')
 const pty = require('node-pty')
@@ -20,7 +22,7 @@ const ptyProcess = pty.spawn(shell, [], {
     name: 'xterm-color',
     cols: 80,
     rows: 30,
-    cwd: process.env.INIT_CWD,
+    cwd: process.env.INIT_CWD + '/user',
     env: process.env
 })
 
@@ -39,6 +41,49 @@ io.on('connection', (socket) => {
     })
 })
 
+app.get('/files', async (req, res) => {
+    const fileTree = await generateFileTree('./user')
+    return res.json({tree: fileTree})
+})
+
 server.listen(port, () => {
     console.log(`🐳 Docker Server is listening on port: ${port}`)
 })
+
+// Files are a type of tree data-structure
+// Trees work recursively
+
+async function generateFileTree(directory) {
+    const tree = {}
+
+    async function buildTree(currentDir, currentTree) {
+        let files
+        try {
+            files = await fs.readdir(currentDir)
+        } catch (err) {
+            console.error("Error reading directory: ", err)
+            return
+        }
+
+        for (const file of files) {
+            const filePath = path.join(currentDir, file)
+            let stat
+            try {
+                stat = await fs.stat(filePath)
+            } catch (err) {
+                console.error("Error getting file stats: ", err)
+                continue
+            }
+
+            if (stat.isDirectory()) {
+                currentTree[file] = {}
+                await buildTree(filePath, currentTree[file])
+            } else {
+                currentTree[file] = null
+            }
+        }
+    }
+
+    await buildTree(directory, tree)
+    return tree
+}
