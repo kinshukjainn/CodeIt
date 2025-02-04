@@ -1,7 +1,7 @@
 // TODO: Implement React Folder Tree
 // TODO: https://www.npmjs.com/package/react-folder-tree
 
-//CODE : 
+//CODE pull : 
 import React, { useState, useCallback, memo } from "react";
 import "./FileTree.css";
 
