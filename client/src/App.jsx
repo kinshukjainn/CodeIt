@@ -8,7 +8,6 @@ import "ace-builds/src-noconflict/ext-language_tools";
 
 import "./App.css";
 import FileTree from './components/tree';
-import './components/FileTree.css'
 import socket from './socket';
 
 const App = () => {
@@ -16,9 +15,7 @@ const App = () => {
   const [selectedFile, setSelectedFile] = useState('');
   const [selectedFileContent, setSelectedFileContent] = useState('');
   const [code, setCode] = useState('');
-
-  // FIXME: isSaved status not working
-  const isSaved = selectedFileContent === code;
+  const [isSaved, setIsSaved] = useState(true); // Track saved status
 
   const getFileTree = async () => {
     const response = await fetch('http://localhost:3001/files');
@@ -33,7 +30,7 @@ const App = () => {
     const result = await response.json();
     setSelectedFileContent(result.content);
     setCode(result.content); // Update the code state with the fetched content
-    isSaved = true
+    setIsSaved(true); // Mark as saved after fetching new content
   }, [selectedFile]);
 
   useEffect(() => {
@@ -46,11 +43,20 @@ const App = () => {
 
   useEffect(() => {
     socket.on('file:refresh', getFileTree);
+    socket.on('file:saved', () => {
+      setIsSaved(true); // Update isSaved state on confirmation
+    });
 
     return () => {
       socket.off('file:refresh', getFileTree);
+      socket.off('file:saved');
     };
   }, []);
+
+  // Update isSaved whenever selectedFileContent or code changes
+  useEffect(() => {
+    setIsSaved(selectedFileContent === code);
+  }, [selectedFileContent, code]);
 
   useEffect(() => {
     if (!isSaved && code) {
@@ -70,7 +76,7 @@ const App = () => {
   return (
     <div className='playground-container'>
       <div className='editor-container'>
-        <div className="file-tree-container">
+        <div className="files">
           <FileTree
             tree={fileTree}
             onSelect={(path) => setSelectedFile(path)}
@@ -81,19 +87,18 @@ const App = () => {
             selectedFile
             &&
             <p className="file-status">
-              <span className="folder-path">
-                {selectedFile.split('/').map((part, index) =>
+                <span className="folder-path">{selectedFile.split('/').map((part, index) => 
                   <React.Fragment key={index}>
                     {part}
                     {index < selectedFile.split('/').length - 1 && <span className="folder-separator">&gt;</span>}
                   </React.Fragment>
                 )}</span>
-              <span className={`status ${isSaved ? 'saved' : 'unsaved'}`}>{isSaved ? 'Saved' : 'Unsaved'}</span>
+                <span className={`status ${isSaved ? 'saved' : 'unsaved'}`}>{isSaved ? 'Saved' : 'Unsaved'}</span>
             </p>
           }
           <AceEditor
             value={code}
-            onChange={(e) => setCode(e)}
+            onChange={(newValue) => setCode(newValue)}
             mode="javascript"
             theme="github"
             fontSize={14}
