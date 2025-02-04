@@ -18,11 +18,13 @@ const FileTreeNode = ({ fileName, nodes, onSelect, path }) => {
             }}
             style={{ marginLeft: '10px' }}
         >
-            <p className={isDir ? "folder-node" : "file-node" && fileName !== "node_modules"}>
+            <p className={isDir ? "folder-node" : "file-node"}>
                 {fileName}
             </p>
             {
-                nodes
+                nodes 
+                &&
+                fileName !== "node_modules"
                 &&
                 <ul>
 
