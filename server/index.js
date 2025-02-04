@@ -46,6 +46,7 @@ io.on('connection', (socket) => {
 
     socket.on('file:change', async ({ path, content }) => {
         await fs.writeFile(`./user/${path}`, content)
+        socket.emit('file:saved', { path }); // Emit confirmation event
     })
 
     socket.on('terminal:write', (data) => {
@@ -60,7 +61,7 @@ app.get('/files', async (req, res) => {
 
 app.get('/files/content', async (req, res) => {
     const path = req.query.path
-    const content = await fs.readFile(`./user/${path}`)
+    const content = await fs.readFile(`./user/${path}`, 'utf8')
     return res.json({content: content})
 })
 

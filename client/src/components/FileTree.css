@@ -1,0 +1,65 @@
+/* File Tree Styling */
+
+.folder-node, .file-node {
+    cursor: pointer; /* Make it clear these are clickable */
+    margin: 5px 0;  /* Add some vertical spacing */
+  }
+  
+  .folder-node {
+    font-weight: bold; /* Folders are visually distinct */
+    color: #337ab7; /* A nice blue for folders */
+  }
+  
+  .file-node {
+    color: #555; /* Slightly darker gray for files */
+  }
+  
+  .folder-node:hover, .file-node:hover {
+    text-decoration: underline; /* Underline on hover for interactivity */
+  }
+  
+  ul {
+    list-style-type: none; /* Remove default bullet points */
+    padding-left: 20px; /* Indent the child nodes */
+  }
+  
+  
+  /*  Optional: Add icons for files and folders  */
+  .folder-node::before {
+    content: '📁 ';  /* Folder icon */
+    margin-right: 5px;
+  }
+  
+  .file-node::before {
+    content: '📄 '; /* File icon */
+    margin-right: 5px;
+  }
+  
+  /*  More advanced styling (optional) */
+  ul {
+    border-left: 1px solid #ddd; /* Add a subtle vertical line to show hierarchy */
+    margin-left: 10px; /* Additional indentation */
+  }
+  
+  li {
+    position: relative; /* Needed for the vertical line */
+  }
+  
+  li::before { /* Create the connecting lines visually */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -16px;  /* Adjust based on your padding/margin */
+    width: 16px;  /* Adjust based on your padding/margin */
+    border-bottom: 1px solid #ddd;
+  }
+  
+  li:last-child::before { /* Style for the last item in a list */
+     height: 50%; /* Make the line shorter for the last item */
+  }
+  
+  .file-tree-container {  /* Add a container for the file tree */
+    margin-right: 20px; /* Add right margin here */
+    overflow-y: auto; /* Add vertical scroll if the tree gets too long */
+    /* Add other container styles like width, border, etc. if needed */
+  }

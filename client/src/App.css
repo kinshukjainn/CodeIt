@@ -8,10 +8,38 @@
     display: flex;
 }
 
-li{
-    list-style: none;
-}
-
-.file-node{
-    background-color: rgb(215, 177, 131);
-}
+/* Styling for the folder structure and saved/unsaved status */
+p.file-status {  /* Add a class for better targeting */
+    display: flex;
+    align-items: center; /* Vertically align content */
+    margin-bottom: 10px; /* Add some spacing */
+  }
+  
+  
+  p.file-status span.folder-path {  /* Target the folder path specifically */
+    font-family: monospace; /* Use a monospace font for clearer structure */
+    white-space: nowrap; /* Prevent wrapping */
+    overflow: auto; /* Add horizontal scrollbar if needed */
+    margin-right: 10px; /* Space between path and status */
+  }
+  
+  p.file-status span.folder-separator { /* Style the separators */
+    margin: 0 5px; /* Add some space around the ">" */
+    color: #999; /* Slightly lighter color */
+  }
+  
+  p.file-status span.status { /* Target the saved/unsaved status */
+    font-weight: bold;
+    padding: 2px 5px;
+    border-radius: 3px;
+  }
+  
+  p.file-status span.status.saved {  /* Style for saved status */
+    background-color: #c8e6c9; /* Light green */
+    color: #270; /* Dark green */
+  }
+  
+  p.file-status span.status.unsaved { /* Style for unsaved status */
+    background-color: #ffd5d5; /* Light red */
+    color: #d8000c; /* Dark red */
+  }

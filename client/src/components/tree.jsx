@@ -1,5 +1,6 @@
 // TODO: Implement React Folder Tree
 // TODO: https://www.npmjs.com/package/react-folder-tree
+import './FileTree.css'; 
 
 const FileTreeNode = ({ fileName, nodes, onSelect, path }) => {
 
@@ -17,7 +18,7 @@ const FileTreeNode = ({ fileName, nodes, onSelect, path }) => {
             }}
             style={{ marginLeft: '10px' }}
         >
-            <p className={isDir ? "folder-node" : "file-node"}>
+            <p className={isDir ? "folder-node" : "file-node" && fileName !== "node_modules"}>
                 {fileName}
             </p>
             {
