@@ -6,6 +6,7 @@ const path = require('path')
 const express = require('express')
 const pty = require('node-pty')
 const cors = require('cors')
+const chokidar = require('chokidar')
 const { Server: SocketServer } = require('socket.io')
 
 const app = express()
@@ -32,12 +33,20 @@ const ptyProcess = pty.spawn(shell, [], {
 
 app.use(cors())
 
+chokidar.watch('./user').on('all', (event, path) => {
+    io.emit('file:refresh', path)
+})
+
 ptyProcess.onData(data => {
     io.emit('terminal:data', data)
 })
 
 io.on('connection', (socket) => {
     console.log("User successfully connected to server with id: ", socket.id)
+
+    socket.on('file:change', async ({ path, content }) => {
+        await fs.writeFile(`./user/${path}`, content)
+    })
 
     socket.on('terminal:write', (data) => {
         ptyProcess.write(data)
@@ -47,6 +56,12 @@ io.on('connection', (socket) => {
 app.get('/files', async (req, res) => {
     const fileTree = await generateFileTree('./user')
     return res.json({tree: fileTree})
+})
+
+app.get('/files/content', async (req, res) => {
+    const path = req.query.path
+    const content = await fs.readFile(`./user/${path}`)
+    return res.json({content: content})
 })
 
 server.listen(port, () => {

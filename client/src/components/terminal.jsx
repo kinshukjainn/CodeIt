@@ -28,8 +28,11 @@ const Terminal = () => {
         // Server to Client
         socket.on('terminal:data', (data) => {
             term.write(data)
-            
         })
+
+        return () => {
+            socket.off('terminal:data')
+        }
     }, [])
 
     return (
